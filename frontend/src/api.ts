@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-async function get(route: String) {
+async function get(route: string) {
     return await axios.get('http://localhost:3000/' + route); 
 }
 
