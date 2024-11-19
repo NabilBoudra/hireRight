@@ -5,9 +5,10 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import Markdown from 'react-markdown';
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Separator } from "./separator";
+import { Job } from "@/utils/types";
 
 
-function JobDescriptionCard({jobItem, className}: {jobItem: any, className: any}) { 
+function JobDescriptionCard({jobItem, className}: {jobItem: Job, className: string}) { 
     return <Card className={className}>
                     <CardHeader>
                     <div className="flex justify-between flex-wrap items-center">
