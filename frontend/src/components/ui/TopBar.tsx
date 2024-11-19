@@ -5,9 +5,9 @@ import { Separator } from "@/components/ui/separator"
 function TopBar() { 
     return <>
     <div className="border-b-2">
-        <div className="mx-[10%] h-16 flex items-center py-3">
+        <div className="ml-[20%] mr-[20%] h-16 flex items-center py-3">
             <div className="grow flex justify-start">
-              <h2>hireRight</h2>
+            <h1 className="scroll-m-20 text-xl font-extrabold">HireRight</h1>
             </div>
             <div className="grow flex justify-end">
               <Button className="bg-accent-foreground mx-1">
