@@ -2,7 +2,7 @@ import { Job } from '@/utils/types';
 import {Card, CardHeader, CardDescription, CardTitle} from './card';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 
-function JobListingCard({jobItem}: {jobItem: Job}) { 
+function JobListingCard({jobItem}: {jobItem: any}) { 
     
     let salaryRange = null;
     if(jobItem.salaryLow && jobItem.salaryHigh) 
