@@ -15,6 +15,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Run frontend Eslint
+      - name: Move into frontend
         run: cd frontend
-             npx eslint --fix 
+      - name: Run frontend Eslint
+        run: npx eslint --fix 
