@@ -5,7 +5,7 @@ export function isMatch(job: Job, searchString: String) {
     for(const searchKeyword of searchKeywords){ 
         const lowerCaseSearchKeyword = searchKeyword.toLowerCase(); 
         const title = job.title.toLowerCase(); 
-        const description = job.title.toLowerCase(); 
+        const description = job.description.toLowerCase(); 
 
         if(!title.includes(lowerCaseSearchKeyword) && !description.includes(lowerCaseSearchKeyword))
             return false; 
