@@ -6,12 +6,12 @@ import TopBar from './components/ui/TopBar'
 import  getJobs from './api'
 import { useEffect, useState } from 'react';
 import SearchBar from './components/ui/SearchBar'
+import { Job } from './utils/types'
 
 
 function App() {
   const [jobItems, setJobItems] = useState([]);
-  const [selectedJobItem, setSelectedJobItem] = useState(null); 
-
+  const [selectedJobItem, setSelectedJobItem] = useState<Job | null>(null); 
 
   useEffect(() => {
     const fetchData = async () => { 
@@ -22,6 +22,13 @@ function App() {
     fetchData();
   }, []);
 
+  const createHandleCardClick = (job: Job) => { 
+    const handleCardClick = () => { 
+      setSelectedJobItem(job); 
+    };
+    return handleCardClick; 
+  }
+
   return (
     <>
       <div className="border">
@@ -30,8 +37,8 @@ function App() {
             <SearchBar/>
           </div>
         <div className="flex h-full px-[20%]"> 
-          <div className="w-1/3 mr-3">
-            {jobItems.map(item => <JobListingCard jobItem={item}/>)}
+          <div className="w-1/3 mr-3" >
+            {jobItems.map(item => <div onClick={createHandleCardClick(item)}><JobListingCard jobItem={item}/></div>)}
           </div>
             {(selectedJobItem && <JobDescriptionCard jobItem={selectedJobItem} className="w-2/3 h-[97vh] sticky inset-y-5"/>)}
          </div>
