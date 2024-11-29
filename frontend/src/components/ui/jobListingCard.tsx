@@ -1,6 +1,6 @@
 import { Job } from '@/utils/types';
 import {Card, CardHeader, CardDescription, CardTitle} from './card';
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import BookmarkButton from './BookmarkButton';
 
 function JobListingCard({jobItem}: {jobItem: Job}) { 
     return (
@@ -10,7 +10,7 @@ function JobListingCard({jobItem}: {jobItem: Job}) {
                     <CardTitle>
                         {jobItem.title}
                     </CardTitle>
-                    <BookmarkBorderIcon/>
+                    <BookmarkButton/>
                 </div>
                 <CardDescription className="my-0">{jobItem.company}</CardDescription>
                 <CardDescription className="my-0">{jobItem.location}</CardDescription>

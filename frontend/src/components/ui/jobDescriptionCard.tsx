@@ -1,11 +1,12 @@
 import { Button } from "./button";
 import { Card, CardContent, CardDescription, CardHeader} from "./card";
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import Markdown from 'react-markdown';
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Separator } from "./separator";
 import { Job } from "@/utils/types";
+import LoginDiv from "./loginDiv";
+import BookmarkButton from "./BookmarkButton";
 
 
 function JobDescriptionCard({jobItem, className}: {jobItem: Job, className: string}) { 
@@ -14,8 +15,10 @@ function JobDescriptionCard({jobItem, className}: {jobItem: Job, className: stri
                     <div className="flex justify-between flex-wrap items-center">
                         <h4 className="scroll-m-20 text-xl bold tracking-tight ">{jobItem.title}</h4>
                         <div className="flex items-center">
-                        <BookmarkBorderIcon fontSize="medium" className="mx-[20px]"/>
-                        <Button className="text-black h-[40px]"> <WorkOutlineIcon/> Apply</Button> 
+                        <BookmarkButton />
+                        <LoginDiv handleClick={() => console.log("good")}>
+                            <Button className="text-black h-[40px]"> <WorkOutlineIcon/> Apply</Button> 
+                        </LoginDiv>
                         </div>
                     </div>
                     <CardDescription>{jobItem.company}</CardDescription>
