@@ -9,7 +9,6 @@ import SearchBar from './components/ui/SearchBar'
 import { Job } from './utils/types'
 import { isMatch } from './utils/helper'
 
-
 function App() {
   const [jobItems, setJobItems] = useState([]);
   const [selectedJobItem, setSelectedJobItem] = useState<Job | null>(null); 
