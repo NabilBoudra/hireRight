@@ -3,22 +3,30 @@ import './App.css'
 import JobListingCard from './components/ui/jobListingCard'
 import JobDescriptionCard from './components/ui/jobDescriptionCard'
 import TopBar from './components/ui/TopBar'
-import  getJobs from './api'
 import { SetStateAction, useEffect, useState } from 'react';
 import SearchBar from './components/ui/SearchBar'
 import { Job } from './utils/types'
 import { isMatch } from './utils/helper'
+import api from './api'
+import { Toaster } from './components/ui/toaster';
 
 function App() {
   const [jobItems, setJobItems] = useState([]);
   const [selectedJobItem, setSelectedJobItem] = useState<Job | null>(null); 
   const [searchString, setSearchString] = useState<String>("");
 
+  console.log(jobItems); 
+
   useEffect(() => {
     const fetchData = async () => { 
-      const fetchedJobItems = await getJobs(); 
-      setJobItems(fetchedJobItems); 
-      setSelectedJobItem(fetchedJobItems[0]);
+      try { 
+        const fetchedJobItems = await api.get('/jobs'); 
+        setJobItems(fetchedJobItems); 
+        setSelectedJobItem(fetchedJobItems[0]);
+      }
+      catch(error) { 
+          console.log(error); 
+      }
     };
     fetchData();
   }, []);
@@ -53,6 +61,7 @@ function App() {
             {(selectedJobItem && <JobDescriptionCard jobItem={selectedJobItem} className="w-2/3 h-[97vh] sticky inset-y-5"/>)}
          </div>
       </div>
+      <Toaster/>
     </>
   )
 }

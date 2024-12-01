@@ -1,18 +1,32 @@
 import axios from 'axios';
+import {msalInstance} from './auth';
 
-async function get(route: string) {
-    return await axios.get('http://localhost:3000/' + route); 
-}
+const api = axios.create({ 
+    baseURL: 'http://localhost:3000', 
+    timeout: 2500, 
+})
 
-async function getJobs() { 
-    try { 
-       const jobItems = await get('jobs'); 
-       return jobItems.data;
+api.interceptors.request.use(
+    async (config) => { 
+        try { 
+            const response = await msalInstance.acquireTokenSilent({ 
+                scopes: ["profile"]
+            });
+            config.headers.Authorization = `Bearer ${response.accessToken}`; 
+            console.log(config.headers.Authorization)
+            return config;
+        }
+        catch(error){ 
+            console.log(error); 
+            return config; 
+        }
     }
-    catch(error) { 
-        console.log(error); 
-    }
-    return [];
-}
+)
 
-export default getJobs;
+api.interceptors.response.use(
+    (response) => { 
+        return response.data
+    }
+)
+
+export default api;
