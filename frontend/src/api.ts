@@ -3,7 +3,7 @@ import {msalInstance} from './auth';
 
 const api = axios.create({ 
     baseURL: 'http://localhost:3000', 
-    timeout: 2500, 
+    timeout: 10000, 
 })
 
 api.interceptors.request.use(

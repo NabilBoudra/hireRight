@@ -10,9 +10,16 @@ function Upload() {
     const { toast } = useToast(); 
 
     const handleFileChange = async (event) => { 
-        const file = event.target.files[0]; 
+        event.preventDefault();
         try { 
-            await api.post('/apply', file);
+            await api.post('/apply', { 
+                resume: event.target.files[0]    
+            },
+            { 
+                headers: { 
+                    "Content-Type": "multipart/form-data",
+                }
+            });
         }
         catch(error) { 
             toast({ 
