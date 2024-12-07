@@ -1,15 +1,16 @@
+import { handleLogin } from "@/auth";
 import { useMsal } from "@azure/msal-react";
 import React from "react";
 
 function LoginDiv({ handleClick, children }: {handleClick: () => void, children: React.ReactNode}) { 
-    const { instance, accounts } = useMsal(); 
+    const { instance } = useMsal(); 
     
-    return ( accounts.length?
+    return ( instance.getActiveAccount()?
                 <div onClick={ handleClick }> 
                     {children}
                 </div>
             : 
-                <div onClick={() => instance.loginPopup()}>
+                <div onClick={ handleLogin }>
                     {children}
                 </div>
     ); 
