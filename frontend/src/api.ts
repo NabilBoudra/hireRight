@@ -10,7 +10,7 @@ api.interceptors.request.use(
     async (config) => { 
         try { 
             const response = await msalInstance.acquireTokenSilent({ 
-                scopes: ["profile"]
+                scopes: ["242946e7-cf63-428f-856f-48c066941fbe/.default"]
             });
             config.headers.Authorization = `Bearer ${response.accessToken}`; 
             console.log(config.headers.Authorization)
