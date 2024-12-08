@@ -6,7 +6,7 @@ export async function getJobs() {
     return jobs; 
 }
 
-export async function insertUser(user: User) {
+export async function addUser(user: User) {
     const upsertedUser = await Prisma.user.upsert({
         where: { 
             id: user.id, 
@@ -15,4 +15,14 @@ export async function insertUser(user: User) {
         update: user,
     })
     return upsertedUser; 
+}
+export async function addApplication(userId: string, jobId: string, fileName: string) { 
+    const addedApplication = await Prisma.application.create({
+        data: { 
+            userId,
+            jobId, 
+            fileName,
+        }
+    });
+    return addedApplication;
 }

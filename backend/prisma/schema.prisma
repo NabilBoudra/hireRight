@@ -8,18 +8,30 @@ datasource db {
 }
 
 model Job {
-  id          String @id @default(uuid())
+  id          String        @id @default(uuid())
   title       String
   company     String
   location    String
   salary      String
   description String
+  Application Application[]
 }
 
 model User {
-  id        String   @id
-  email     String   @unique
-  name      String
-  lastLogin DateTime?
-  lastSeen  DateTime?
+  id          String        @id
+  email       String        @unique
+  name        String
+  lastLogin   DateTime?
+  lastSeen    DateTime?
+  Application Application[]
+}
+
+model Application {
+  user     User     @relation(fields: [userId], references: [id])
+  userId   String
+  job      Job      @relation(fields: [jobId], references: [id])
+  jobId    String
+  fileName String
+  date     DateTime @default(now())
+  @@id(fields: [userId, jobId])
 }

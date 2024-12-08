@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { getKey } from './helpers';
 import { NextFunction, Request, Response } from 'express';
-import { insertUser } from './services';
+import { addUser } from './services';
 import multer from 'multer';
 
 export function decodeTokenIfExists(req: Request, res: Response, next: NextFunction) { 
@@ -24,7 +24,7 @@ export function decodeTokenIfExists(req: Request, res: Response, next: NextFunct
             return;
         }
         req.user = {id: decoded.oid, name: decoded.name, email: decoded.preferred_username, lastLogin: new Date(decoded.iat * 1000), lastSeen: new Date()};
-        insertUser(req.user)
+        addUser(req.user)
         next();
     });
 };
