@@ -1,12 +1,11 @@
 
-import './App.css'
 import JobListingCard from './components/ui/jobListingCard'
 import JobDescriptionCard from './components/ui/jobDescriptionCard'
 import TopBar from './components/ui/TopBar'
 import { SetStateAction, useEffect, useState } from 'react';
 import SearchBar from './components/ui/SearchBar'
 import { Job } from './utils/types'
-import { isMatch } from './utils/helper'
+import { isMatch } from './utils/helpers'
 import api from './api'
 import { Toaster } from './components/ui/toaster';
 
