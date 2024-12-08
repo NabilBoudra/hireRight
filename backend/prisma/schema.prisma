@@ -15,3 +15,11 @@ model Job {
   salary      String
   description String
 }
+
+model User {
+  id        String   @id
+  email     String   @unique
+  name      String
+  lastLogin DateTime?
+  lastSeen  DateTime?
+}
