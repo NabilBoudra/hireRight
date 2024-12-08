@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import { getKey } from './helpers';
 import { NextFunction, Request, Response } from 'express';
 import { insertUser } from './services';
+import multer from 'multer';
 
 export function decodeTokenIfExists(req: Request, res: Response, next: NextFunction) { 
     const regex = /^Bearer (.*)$/, authorizationHeader = req.headers['authorization'];
@@ -35,3 +36,5 @@ export function checkDecodedToken(req: Request, res: Response, next: NextFunctio
     }
     next();
 }
+
+export const handleResumeUpload = multer({dest: 'resumes/'}).single('resume');
