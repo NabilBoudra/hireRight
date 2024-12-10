@@ -24,7 +24,6 @@ function App() {
     const fetchData = async () => { 
       try { 
         const fetchedJobItems: Job[] = await api.get('/jobs'); 
-        console.log(fetchedJobItems);
         dispatch(setJobs(fetchedJobItems))
         setSelectedJobItem(fetchedJobItems[0]);
       }
@@ -56,7 +55,7 @@ function App() {
         <div className="flex h-full px-[20%]"> 
           <div className="w-1/3 mr-3" >
             {jobs.filter(item => isMatch(item, searchString))
-                     .map(item => <div onClick={createHandleCardClick(item)}>
+                     .map(item => <div key={item.id} onClick={createHandleCardClick(item)}>
                                       <JobListingCard jobItem={item}/>
                                   </div>
                           )
