@@ -5,10 +5,12 @@ import { Separator } from "./separator";
 import { Job } from "@/utils/types";
 import BookmarkButton from "./BookmarkButton";
 import Upload from "./Upload";
+import { JobContext } from "@/contexts/JobContext";
 
 
 function JobDescriptionCard({jobItem, className}: {jobItem: Job, className: string}) { 
-    return <Card className={className}>
+    return <JobContext.Provider value={jobItem}>
+        <Card className={className}>
                     <CardHeader>
                     <div className="flex justify-between flex-wrap items-center">
                         <h4 className="scroll-m-20 text-xl bold tracking-tight ">{jobItem.title}</h4>
@@ -29,6 +31,7 @@ function JobDescriptionCard({jobItem, className}: {jobItem: Job, className: stri
                         </ScrollArea>
                     </CardContent>
         </Card>
+    </JobContext.Provider>
 };
 
 export default JobDescriptionCard;

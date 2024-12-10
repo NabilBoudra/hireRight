@@ -8,11 +8,13 @@ import { Job } from './utils/types'
 import { isMatch } from './utils/helpers'
 import api from './api'
 import { Toaster } from './components/ui/toaster';
+import { useMsal } from '@azure/msal-react';
 
 function App() {
   const [jobItems, setJobItems] = useState([]);
   const [selectedJobItem, setSelectedJobItem] = useState<Job | null>(null); 
   const [searchString, setSearchString] = useState<String>("");
+  const { accounts } = useMsal();
 
   console.log(jobItems); 
 
@@ -20,6 +22,7 @@ function App() {
     const fetchData = async () => { 
       try { 
         const fetchedJobItems = await api.get('/jobs'); 
+        console.log(fetchedJobItems);
         setJobItems(fetchedJobItems); 
         setSelectedJobItem(fetchedJobItems[0]);
       }
@@ -28,7 +31,7 @@ function App() {
       }
     };
     fetchData();
-  }, []);
+  }, [accounts]);
 
   const handleSearchBarChange = (event: { target: { value: SetStateAction<String> } }) => {
     setSearchString(event.target.value);
