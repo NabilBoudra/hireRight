@@ -1,5 +1,5 @@
 import express from 'express';
-import { getJobs } from './services';
+import { addApplication, flipBookmark, getJobs } from './services';
 import {Request, Response} from 'express' 
 import { checkDecodedToken, handleResumeUpload } from './middlewares';
 
@@ -7,20 +7,34 @@ const router = express.Router();
 
 router.post('/apply', checkDecodedToken, handleResumeUpload, async (req: Request, res: Response) => { 
   try {
-    res.status(200).end();
+    const application = await addApplication(req.user!.id, req.body.jobId, req.file!.filename)
+    res.json(application);
   }
   catch(error) { 
     console.log(error); 
+    res.status(500).end();
+  }
+})
+
+router.post('/bookmark', checkDecodedToken, async (req: Request, res: Response) => { 
+  try { 
+    const bookmark = await flipBookmark(req.user!.id, req.body.jobId); 
+    res.json(bookmark); 
+  }
+  catch(error) { 
+    console.log(error);
+    res.status(500).end();
   }
 })
 
 router.get('/jobs', async (req: Request, res: Response) => {
   try { 
-    const jobs = await getJobs(); 
+    const jobs = await getJobs(req.user?.id || null); 
     res.json(jobs);
   }
   catch(e) { 
     console.log(e); 
+    res.status(500).end();
   }
 
 });

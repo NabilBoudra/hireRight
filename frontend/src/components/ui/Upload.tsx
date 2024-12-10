@@ -1,25 +1,39 @@
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import { Button } from "./button";
 import LoginDiv from "./loginDiv";
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
+import CheckIcon from '@mui/icons-material/Check';
 import api from "@/api";
 import { useToast } from "@/hooks/use-toast";
+import { JobContext } from "@/contexts/JobContext";
+import { useDispatch } from "react-redux";
+import { updateJob } from "@/redux/slices/jobsSlice";
+import { Job } from "@/utils/types";
 
 function Upload() { 
+    const jobItem = useContext(JobContext);
     const inputRef = useRef(null); 
     const { toast } = useToast(); 
+    const dispatch = useDispatch();
 
     const handleFileChange = async (event) => { 
         event.preventDefault();
         try { 
+            if(!jobItem) { 
+                throw new Error('jobItem is null');
+            }
             await api.post('/apply', { 
-                resume: event.target.files[0]    
+                resume: event.target.files[0],
+                jobId: jobItem.id
             },
             { 
                 headers: { 
                     "Content-Type": "multipart/form-data",
                 }
             });
+            console.log("Here it is lol")
+            console.log({...jobItem, hasApplied: true});
+            dispatch(updateJob({...jobItem, hasApplied: true}));
         }
         catch(error) { 
             toast({ 
@@ -37,7 +51,11 @@ function Upload() {
                     onChange={handleFileChange}
                     className="hidden"
                 />
-                <Button onClick={() => inputRef.current.click()} className="text-black h-[40px]"> <WorkOutlineIcon/> Apply</Button> 
+                {(!jobItem?.hasApplied?
+                    <Button onClick={() => inputRef.current.click()} className="text-black h-[40px]"> <WorkOutlineIcon/>Apply</Button> 
+                    :
+                    <Button onClick={() => toast({title: `You already applied for this position.`})} className="text-black h-[40px]"> <CheckIcon/>Applied</Button> 
+                )}
             </LoginDiv>
 }
 
