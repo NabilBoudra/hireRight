@@ -6,14 +6,24 @@ import { MsalProvider } from "@azure/msal-react";
 import {msalInstance} from './auth.ts';
 import {Provider} from 'react-redux';
 import { store } from './redux/store.ts';
+import { BrowserRouter, Route, Routes } from "react-router";
+import RecruiterApp from './RecruiterApp.tsx';
+
 
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Provider store={store}>
-      <MsalProvider instance={msalInstance}>
-        <App />
-      </MsalProvider>
-    </Provider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={
+          <Provider store={store}>
+            <MsalProvider instance={msalInstance}>
+              <App />
+            </MsalProvider>
+          </Provider>
+        }/>  
+        <Route path="recruiter" element={<RecruiterApp/>}/>
+      </Routes>
+    </BrowserRouter>
   </StrictMode>,
 )
