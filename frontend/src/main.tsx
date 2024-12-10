@@ -4,12 +4,16 @@ import './index.css'
 import App from './App.tsx'
 import { MsalProvider } from "@azure/msal-react";
 import {msalInstance} from './auth.ts';
+import {Provider} from 'react-redux';
+import { store } from './redux/store.ts';
 
 
-  createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <MsalProvider instance={msalInstance}>
-      <App />
-    </MsalProvider>
+    <Provider store={store}>
+      <MsalProvider instance={msalInstance}>
+        <App />
+      </MsalProvider>
+    </Provider>
   </StrictMode>,
 )

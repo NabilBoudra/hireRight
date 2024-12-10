@@ -1,15 +1,25 @@
 import { JobContext } from "@/contexts/JobContext";
 import LoginDiv from "./loginDiv";
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { useContext } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { updateJob } from "@/redux/slices/jobsSlice";
+import { useDispatch } from "react-redux";
+import api from "@/api";
 
 function BookmarkButton(){ 
     const job = useContext(JobContext); 
     const { toast } = useToast();
-    const handleBookmark = () => {
+    const dispatch = useDispatch(); 
+    const handleBookmark = async () => {
         try {
-            console.log('clicked')
+            if(job) { 
+                await api.post('/bookmark', { 
+                    jobId: job.id
+                }); 
+                dispatch(updateJob({...job, hasBookmarked: !job.hasBookmarked}));
+            }
         }
         catch(err) { 
             console.log(err); 
@@ -18,7 +28,12 @@ function BookmarkButton(){
     };
 
     return <LoginDiv handleClick={handleBookmark}>
-            <BookmarkBorderIcon fontSize="medium" className="mx-[20px]"/>
+            {
+                !job?.hasBookmarked? 
+                    <BookmarkBorderIcon fontSize="medium" className="mx-[20px]"/>
+                : 
+                    <BookmarkIcon fontSize="medium" className="mx-[20px]"/>
+            }
         </LoginDiv>
 }
 

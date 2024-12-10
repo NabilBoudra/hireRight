@@ -54,15 +54,23 @@ export async function addUser(user: User) {
 }
 
 export async function flipBookmark(userId: string, jobId: string) { 
-    const bookmark = await Prisma.bookmark.delete({ 
-        where: {
-            userId_jobId: { 
-                userId, 
-                jobId
-            }
+    const exists = await Prisma.bookmark.findFirst({
+        where: { 
+            userId, 
+            jobId
         }
     });
-    if(bookmark) return; 
+    if(exists) { 
+        const bookmark = await Prisma.bookmark.delete({ 
+            where: {
+                userId_jobId: { 
+                    userId, 
+                    jobId
+                }
+            }
+        });
+        return; 
+    }
     return await Prisma.bookmark.create({ 
         data: {
             userId, 

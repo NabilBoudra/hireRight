@@ -9,21 +9,23 @@ import { isMatch } from './utils/helpers'
 import api from './api'
 import { Toaster } from './components/ui/toaster';
 import { useMsal } from '@azure/msal-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from './redux/store';
+import { setJobs } from './redux/slices/jobsSlice';
 
 function App() {
-  const [jobItems, setJobItems] = useState([]);
   const [selectedJobItem, setSelectedJobItem] = useState<Job | null>(null); 
   const [searchString, setSearchString] = useState<String>("");
+  const jobs = useSelector((state: RootState) => state.jobs.value);
+  const dispatch = useDispatch(); 
   const { accounts } = useMsal();
-
-  console.log(jobItems); 
 
   useEffect(() => {
     const fetchData = async () => { 
       try { 
-        const fetchedJobItems = await api.get('/jobs'); 
+        const fetchedJobItems: Job[] = await api.get('/jobs'); 
         console.log(fetchedJobItems);
-        setJobItems(fetchedJobItems); 
+        dispatch(setJobs(fetchedJobItems))
         setSelectedJobItem(fetchedJobItems[0]);
       }
       catch(error) { 
@@ -53,14 +55,18 @@ function App() {
           </div>
         <div className="flex h-full px-[20%]"> 
           <div className="w-1/3 mr-3" >
-            {jobItems.filter(item => isMatch(item, searchString))
+            {jobs.filter(item => isMatch(item, searchString))
                      .map(item => <div onClick={createHandleCardClick(item)}>
                                       <JobListingCard jobItem={item}/>
                                   </div>
                           )
             }
           </div>
-            {(selectedJobItem && <JobDescriptionCard jobItem={selectedJobItem} className="w-2/3 h-[97vh] sticky inset-y-5"/>)}
+            {(selectedJobItem && 
+                <JobDescriptionCard 
+                    jobItem={jobs.find(job => (job.id === selectedJobItem.id))!} 
+                    className="w-2/3 h-[97vh] sticky inset-y-5"/>
+          )}
          </div>
       </div>
       <Toaster/>
