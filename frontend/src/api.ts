@@ -13,11 +13,10 @@ api.interceptors.request.use(
                 scopes: ["242946e7-cf63-428f-856f-48c066941fbe/.default"]
             });
             config.headers.Authorization = `Bearer ${response.accessToken}`; 
-            console.log(config.headers.Authorization)
             return config;
         }
         catch(error){ 
-            console.log(error); 
+            console.log(error);
             return config; 
         }
     }

@@ -31,8 +31,6 @@ function Upload() {
                     "Content-Type": "multipart/form-data",
                 }
             });
-            console.log("Here it is lol")
-            console.log({...jobItem, hasApplied: true});
             dispatch(updateJob({...jobItem, hasApplied: true}));
         }
         catch(error) { 
