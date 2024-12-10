@@ -16,7 +16,9 @@ function TopBar() {
             </div>
               { instance.getActiveAccount()?
                   <div className="grow flex justify-end">
-                    <Button variant="ghost" onClick={() => instance.logoutPopup()}>
+                    <Button variant="ghost" onClick={() => instance.logoutRedirect({ 
+                      onRedirectNavigate: (url) => {return false;}
+                    })}>
                       <AccountCircleIcon/>
                       {instance.getActiveAccount().name}
                     </Button>
