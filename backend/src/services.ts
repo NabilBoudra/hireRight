@@ -2,31 +2,24 @@ import { User } from '@prisma/client';
 import Prisma from '../prisma/prisma'; 
 
 export async function getJobs(userId: string | null) { 
-    let jobs = null; 
-    if(userId) {
-        jobs = await Prisma.job.findMany({ 
-            include: { 
-                Application: { 
-                    where: { 
-                        userId,
-                    }
-                },
-                Bookmark: { 
-                    where: { 
-                        userId,
-                    }
+    if(!userId) { 
+        const jobs = await Prisma.job.findMany(); 
+        return jobs.map(job => ({...job, hasApplied: false, hasBookmarked: false}))
+    }
+    const jobs = await Prisma.job.findMany({ 
+        include: { 
+            Application: { 
+                where: { 
+                    userId,
+                }
+            },
+            Bookmark: { 
+                where: { 
+                    userId,
                 }
             }
-        });
-    }
-    else { 
-        jobs = await Prisma.job.findMany({
-            include: { 
-                Application: true,
-                Bookmark: true,
-            }
-        });
-    }
+        }
+    });
     const jobsWithHasApplied = jobs.map(job => { 
         return {
             id: job.id,
@@ -35,8 +28,8 @@ export async function getJobs(userId: string | null) {
             location: job.location, 
             salary: job.salary, 
             description: job.description, 
-            hasApplied: job.Application.length > 0,
-            hasBookmarked: job.Bookmark.length > 0,
+            hasApplied: (('Application' in job) && (job.Application.length > 0) ),
+            hasBookmarked: (('Bookmark' in job) && (job.Bookmark.length > 0)),
         };
     }); 
     return jobsWithHasApplied;
