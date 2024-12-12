@@ -1,5 +1,5 @@
 import { Job } from '@/utils/types';
-import {Card, CardHeader, CardDescription, CardTitle} from './card';
+import {Card, CardHeader, CardDescription, CardTitle} from '../../components/ui/card';
 import BookmarkButton from './BookmarkButton';
 import { JobContext } from '@/contexts/JobContext';
 

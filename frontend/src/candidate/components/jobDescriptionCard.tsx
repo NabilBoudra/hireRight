@@ -1,7 +1,7 @@
-import { Card, CardContent, CardDescription, CardHeader} from "./card";
+import { Card, CardContent, CardDescription, CardHeader} from "../../components/ui/card";
 import Markdown from 'react-markdown';
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { Separator } from "./separator";
+import { Separator } from "../../components/ui/separator";
 import { Job } from "@/utils/types";
 import BookmarkButton from "./BookmarkButton";
 import Upload from "./Upload";
