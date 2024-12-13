@@ -1,5 +1,5 @@
 import express from 'express';
-import { addApplication, flipBookmark, getOpenJobs, getMainStatistics } from './services';
+import { addApplication, flipBookmark, getOpenJobs, getMainStatistics, getAllStatisticsByJob } from './services';
 import {Request, Response} from 'express' 
 import { checkDecodedToken, handleResumeUpload } from './middlewares';
 
@@ -43,6 +43,18 @@ router.get('/jobs', async (req: Request, res: Response) => {
 router.get('/statistics', async (req: Request, res: Response) => {
   try { 
     const statitics = await getMainStatistics(); 
+    res.json(statitics);
+  }
+  catch(e) { 
+    console.log(e); 
+    res.status(500).end();
+  }
+
+});
+
+router.get('/job-statistics', async (req: Request, res: Response) => {
+  try { 
+    const statitics = await getAllStatisticsByJob(); 
     res.json(statitics);
   }
   catch(e) { 

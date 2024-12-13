@@ -135,3 +135,25 @@ export async function getMainStatistics() {
     });
     return {openJobsCount, unreviewedApplicationsCount, chartStatistics: formattedApplications};
 }
+
+export async function getAllStatisticsByJob() { 
+    const jobStatistics: any[] = await Prisma.$queryRaw`
+    SELECT 
+        j.*, 
+        COUNT(a."userId") as "applicationsCount", 
+        SUM(CASE WHEN a."isReviewed" = false THEN 1 ELSE 0 END) as "unreviewedApplicationsCount"
+    FROM 
+        "Job" j
+    LEFT JOIN 
+        "Application" a ON j.id = a."jobId"
+    GROUP BY 
+        j.id
+`;
+
+
+return jobStatistics.map(jobStatistic => ({ 
+    ...jobStatistic, 
+    applicationsCount: Number(jobStatistic.applicationsCount), 
+    unreviewedApplicationsCount: Number(jobStatistic.unreviewedApplicationsCount), 
+}))
+}
