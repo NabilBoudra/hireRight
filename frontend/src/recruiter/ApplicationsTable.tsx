@@ -104,7 +104,7 @@ export default function applicantsTable() {
                                 </TableCell>
                                 <TableCell >{applicant.yoe}</TableCell>
                                 <TableCell>{applicant.score}</TableCell>
-                                <TableCell className="flex ">
+                                <TableCell>
                                   <FileDownloadOutlinedIcon/>
                                 </TableCell>
                             </TableRow>
