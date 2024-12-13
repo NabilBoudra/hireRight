@@ -5,17 +5,10 @@ import { Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
-export default function JobTable() { 
+export default function ApplicationsTable() { 
     const [jobs, setJobs] = useState([]); 
     const navigate = useNavigate(); 
 
-    useEffect(() => { 
-        const fetchJobs = async () => { 
-            const fetchedJobs = await api.get('/statistics-by-job')
-            setJobs(fetchedJobs);
-        }
-        fetchJobs();
-    }, [])
     return <Card className="mt-2 w-full">
                 <CardHeader>
                     <CardTitle>
@@ -41,7 +34,6 @@ export default function JobTable() {
                         {jobs.map((job, index) => (
                             <TableRow key={index} onClick={
                                 () => {
-                                    console.log(job.id);
                                     navigate(`/recruiter/${job.id}`)
                                 }
                             }>

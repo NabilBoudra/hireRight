@@ -151,9 +151,68 @@ export async function getAllStatisticsByJob() {
 `;
 
 
-return jobStatistics.map(jobStatistic => ({ 
-    ...jobStatistic, 
-    applicationsCount: Number(jobStatistic.applicationsCount), 
-    unreviewedApplicationsCount: Number(jobStatistic.unreviewedApplicationsCount), 
-}))
+    return jobStatistics.map(jobStatistic => ({ 
+        ...jobStatistic, 
+        applicationsCount: Number(jobStatistic.applicationsCount), 
+        unreviewedApplicationsCount: Number(jobStatistic.unreviewedApplicationsCount), 
+    }))
+}
+
+export async function getJobStatistics(id: string) {
+    const job = await Prisma.job.findUnique({
+        where: { id },
+        include: {
+            _count: {
+                select: { Application: true },
+            },
+            Application: {
+                where: { isReviewed: false },
+            },
+        },
+    });
+
+    if (!job) {
+        throw new Error("Job not found");
+    }
+
+    const applicationsCount = job._count.Application;
+    const unreviewedApplicationsCount = job.Application.length;
+    const applications: any[] = await Prisma.$queryRaw`
+        WITH RECURSIVE dates AS (
+            SELECT CURRENT_DATE - INTERVAL '29 days' AS date
+            UNION ALL
+            SELECT date + INTERVAL '1 day'
+            FROM dates
+            WHERE date + INTERVAL '1 day' <= CURRENT_DATE
+        )
+        SELECT 
+            d.date, 
+            COALESCE(COUNT(a."userId"), 0) as count 
+        FROM 
+            dates d
+        LEFT JOIN 
+            "Application" a ON DATE(a.date) = d.date AND a."jobId" = ${id}
+        GROUP BY 
+            d.date
+        ORDER BY 
+            d.date
+    `;
+
+    const formattedApplications = applications.map(app => { 
+        return {
+            ...app,
+            count: Number(app.count),
+        }
+    });
+    return {
+        id: job.id,
+        title: job.title,
+        company: job.company,
+        location: job.location,
+        salary: job.salary,
+        description: job.description,
+        applicationsCount: Number(applicationsCount),
+        unreviewedApplicationsCount: Number(unreviewedApplicationsCount),
+        chartStatistics: formattedApplications,
+    };
 }
