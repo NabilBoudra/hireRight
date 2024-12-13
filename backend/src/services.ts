@@ -82,3 +82,24 @@ export async function addApplication(userId: string, jobId: string, fileName: st
     });
     return addedApplication;
 }
+
+export async function getMainStatistics() { 
+    const applications: any[] = await Prisma.$queryRaw`
+        SELECT 
+            DATE("date") as date, 
+            COUNT(*) as count 
+        FROM 
+            "Application" 
+        GROUP BY 
+            DATE("date")
+        ORDER BY 
+            DATE("date")
+    `;
+    const formattedApplications = applications.map(app => { 
+        return {
+        ...app,
+        count: Number(app.count),
+        }
+    });
+    return formattedApplications;
+}
