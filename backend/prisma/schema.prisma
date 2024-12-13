@@ -38,6 +38,7 @@ model Application {
   jobId    String
   fileName String
   date     DateTime @default(now())
+  isReviewed Boolean @default(false)
 
   @@id(fields: [userId, jobId])
 }

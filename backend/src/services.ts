@@ -95,22 +95,43 @@ export async function addApplication(userId: string, jobId: string, fileName: st
 }
 
 export async function getMainStatistics() { 
+    const openJobsCount = await Prisma.job.count({
+        where: {
+            isOpen: true, 
+        }
+    });
+    const unreviewedApplicationsCount = await Prisma.application.count({ 
+        where: { 
+            isReviewed: false, 
+        }
+    })
+
     const applications: any[] = await Prisma.$queryRaw`
+        WITH RECURSIVE dates AS (
+            SELECT CURRENT_DATE - INTERVAL '29 days' AS date
+            UNION ALL
+            SELECT date + INTERVAL '1 day'
+            FROM dates
+            WHERE date + INTERVAL '1 day' <= CURRENT_DATE
+        )
         SELECT 
-            DATE("date") as date, 
-            COUNT(*) as count 
+            d.date, 
+            COALESCE(COUNT(a."userId"), 0) as count 
         FROM 
-            "Application" 
+            dates d
+        LEFT JOIN 
+            "Application" a ON DATE(a.date) = d.date
         GROUP BY 
-            DATE("date")
+            d.date
         ORDER BY 
-            DATE("date")
+            d.date
     `;
+    
     const formattedApplications = applications.map(app => { 
         return {
         ...app,
         count: Number(app.count),
         }
     });
-    return formattedApplications;
+    return {openJobsCount, unreviewedApplicationsCount, chartStatistics: formattedApplications};
 }
