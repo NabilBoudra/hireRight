@@ -1,5 +1,5 @@
 import express from 'express';
-import { addApplication, flipBookmark, getJobs, getMainStatistics } from './services';
+import { addApplication, flipBookmark, getOpenJobs, getMainStatistics } from './services';
 import {Request, Response} from 'express' 
 import { checkDecodedToken, handleResumeUpload } from './middlewares';
 
@@ -29,7 +29,7 @@ router.post('/bookmark', checkDecodedToken, async (req: Request, res: Response) 
 
 router.get('/jobs', async (req: Request, res: Response) => {
   try { 
-    const jobs = await getJobs(req.user?.id || null); 
+    const jobs = await getOpenJobs(req.user?.id || null); 
     res.json(jobs);
   }
   catch(e) { 

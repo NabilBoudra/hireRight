@@ -1,12 +1,15 @@
 import { User } from '@prisma/client';
 import Prisma from '../prisma/prisma'; 
 
-export async function getJobs(userId: string | null) { 
+export async function getOpenJobs(userId: string | null) { 
     if(!userId) { 
         const jobs = await Prisma.job.findMany(); 
         return jobs.map(job => ({...job, hasApplied: false, hasBookmarked: false}))
     }
     const jobs = await Prisma.job.findMany({ 
+        where: { 
+            isOpen: true, 
+        },
         include: { 
             Application: { 
                 where: { 
@@ -73,6 +76,14 @@ export async function flipBookmark(userId: string, jobId: string) {
 }
 
 export async function addApplication(userId: string, jobId: string, fileName: string) { 
+    const job = await Prisma.job.findUnique({ 
+        where: { 
+            id: jobId, 
+        }
+    }); 
+    if(!job || !job.isOpen){ 
+        throw new Error("Cannot apply to a closed job");
+    }
     const addedApplication = await Prisma.application.create({
         data: { 
             userId,
