@@ -297,5 +297,6 @@ export async function getApplicantsByJobId(id: string) {
         skills: applicant.skills,
         yoe: applicant.yoe,
         score: applicant.score, 
+        url: `/resumes/${applicant.fileName}`,
     }));
 }

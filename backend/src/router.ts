@@ -2,7 +2,6 @@ import express from 'express';
 import { addApplication, flipBookmark, getOpenJobs, getMainStatistics, getAllStatisticsByJob, getJobStatistics, getApplicantsByJobId } from './services';
 import {Request, Response} from 'express' 
 import { checkDecodedToken, handleResumeUpload } from './middlewares';
-import { createCipheriv } from 'crypto';
 
 const router = express.Router();
 
@@ -85,6 +84,11 @@ router.get('/applicants/:id', async (req: Request, res: Response) => {
     console.log(e); 
     res.status(500).end();
   }
+});
+
+router.get('/resumes/:filename', (req, res) => {
+  const file = `resumes/${req.params.filename}`;
+  res.download(file); // This will force the download instead of displaying in browser
 });
 
 export default router; 
