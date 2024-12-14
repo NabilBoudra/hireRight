@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator"
 import { useMsal } from "@azure/msal-react";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { handleLogin } from "@/auth";
+import { Link } from "react-router";
 
 function TopBar() { 
     const { instance } = useMsal(); 
@@ -30,12 +31,14 @@ function TopBar() {
                     Sign in
                     </Button>
                     <Separator orientation="vertical" className="mx-1"/>
-                    <Button variant="ghost" >Employers/Post Job</Button>
+                    <Button variant="ghost" >
+                      <Link to="/recruiter">Employers/Post Job</Link>
+                    </Button>
+                    </div>
+                    }
                   </div>
-              }
             </div>
-      </div>
-    </>
-}
+          </>
+      }
 
 export default TopBar;

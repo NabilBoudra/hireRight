@@ -3,6 +3,7 @@ import { getKey } from './helpers';
 import { NextFunction, Request, Response } from 'express';
 import { addUser } from './services';
 import multer from 'multer';
+import { v4 as uuidv4 } from 'uuid';
 
 export function decodeTokenIfExists(req: Request, res: Response, next: NextFunction) { 
     const regex = /^Bearer (.*)$/, authorizationHeader = req.headers['authorization'];
@@ -37,4 +38,11 @@ export function checkDecodedToken(req: Request, res: Response, next: NextFunctio
     next();
 }
 
-export const handleResumeUpload = multer({dest: 'resumes/'}).single('resume');
+export const handleResumeUpload = multer({
+    storage: multer.diskStorage({
+      destination: 'resumes/',
+      filename: function (req, file, cb) {
+        cb(null, uuidv4() + '.pdf');
+      }
+    })
+  }).single('resume');

@@ -1,5 +1,5 @@
 import { useContext, useRef } from "react";
-import { Button } from "./button";
+import { Button } from "../../components/ui/button";
 import LoginDiv from "./loginDiv";
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import CheckIcon from '@mui/icons-material/Check';
@@ -8,7 +8,6 @@ import { useToast } from "@/hooks/use-toast";
 import { JobContext } from "@/contexts/JobContext";
 import { useDispatch } from "react-redux";
 import { updateJob } from "@/redux/slices/jobsSlice";
-import { Job } from "@/utils/types";
 
 function Upload() { 
     const jobItem = useContext(JobContext);

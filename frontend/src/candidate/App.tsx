@@ -1,17 +1,17 @@
 
-import JobListingCard from './components/ui/jobListingCard'
-import JobDescriptionCard from './components/ui/jobDescriptionCard'
-import TopBar from './components/ui/TopBar'
+import JobListingCard from './components/jobListingCard'
+import JobDescriptionCard from './components/jobDescriptionCard'
+import TopBar from './components/TopBar'
 import { SetStateAction, useEffect, useState } from 'react';
-import SearchBar from './components/ui/SearchBar'
-import { Job } from './utils/types'
-import { isMatch } from './utils/helpers'
-import api from './api'
-import { Toaster } from './components/ui/toaster';
+import SearchBar from '../components/ui/SearchBar'
+import { Job } from '../utils/types'
+import { isMatch } from '../utils/helpers'
+import api from '../api'
+import { Toaster } from '../components/ui/toaster';
 import { useMsal } from '@azure/msal-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from './redux/store';
-import { setJobs } from './redux/slices/jobsSlice';
+import { RootState } from '../redux/store';
+import { setJobs } from '../redux/slices/jobsSlice';
 
 function App() {
   const [selectedJobItem, setSelectedJobItem] = useState<Job | null>(null); 
