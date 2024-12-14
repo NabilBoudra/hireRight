@@ -82,7 +82,7 @@ export async function flipBookmark(userId: string, jobId: string) {
     });
 }
 
-export async function addApplication(userId: string, jobId: string, fileName: string, path: string) { 
+export async function addApplication(userId: string, jobId: string, fileName: string, path: string, date: null | Date = null, isReviewed: boolean = false) { 
     const job = await Prisma.job.findUnique({ 
         where: { 
             id: jobId, 
@@ -147,10 +147,12 @@ export async function addApplication(userId: string, jobId: string, fileName: st
             userId,
             jobId, 
             fileName,
+            isReviewed,
             summary: formattedContent.summary,
             skills: formattedContent.skills, 
             yoe: formattedContent.yoe, 
             score: formattedContent.score,
+            date: date || new Date(),
         }
     });
     return addedApplication;
@@ -291,6 +293,7 @@ export async function getApplicantsByJobId(id: string) {
     });
 
     return applicants.map(applicant => ({
+        id: applicant.userId,
         name: applicant.user.name,
         isReviewed: applicant.isReviewed,
         summary: applicant.summary,
@@ -299,4 +302,25 @@ export async function getApplicantsByJobId(id: string) {
         score: applicant.score, 
         url: `/resumes/${applicant.fileName}`,
     }));
+}
+
+export async function toggleApplicantStatus(jobId: string, userId: string) { 
+    const application = await Prisma.application.findFirst({ 
+        where: { 
+            jobId, 
+            userId
+        }
+    });
+    if(!application) { 
+        throw new Error("Application not found");
+    }
+    return await Prisma.application.update({ 
+        where: { 
+            userId_jobId: {userId, jobId},
+        },
+        data: { 
+            isReviewed: !application.isReviewed
+        }
+    });
+    return;
 }

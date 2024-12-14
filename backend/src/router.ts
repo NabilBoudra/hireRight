@@ -1,9 +1,19 @@
 import express from 'express';
-import { addApplication, flipBookmark, getOpenJobs, getMainStatistics, getAllStatisticsByJob, getJobStatistics, getApplicantsByJobId } from './services';
+import { addApplication, flipBookmark, getOpenJobs, getMainStatistics, getAllStatisticsByJob, getJobStatistics, getApplicantsByJobId, toggleApplicantStatus } from './services';
 import {Request, Response} from 'express' 
 import { checkDecodedToken, handleResumeUpload } from './middlewares';
 
 const router = express.Router();
+
+router.put('/toggle-status', async (req: Request, res: Response) => {
+  try{ 
+    await toggleApplicantStatus(req.body.jobId, req.body.userId);
+    res.status(200).end();
+  } 
+  catch(e) { 
+    console.log(e);
+  }
+}); 
 
 router.post('/apply', checkDecodedToken, handleResumeUpload, async (req: Request, res: Response) => { 
   try {
@@ -88,7 +98,7 @@ router.get('/applicants/:id', async (req: Request, res: Response) => {
 
 router.get('/resumes/:filename', (req, res) => {
   const file = `resumes/${req.params.filename}`;
-  res.download(file); // This will force the download instead of displaying in browser
+  res.download(file); 
 });
 
 export default router; 
