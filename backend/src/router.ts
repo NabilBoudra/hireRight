@@ -1,7 +1,8 @@
 import express from 'express';
-import { addApplication, flipBookmark, getOpenJobs, getMainStatistics, getAllStatisticsByJob, getJobStatistics } from './services';
+import { addApplication, flipBookmark, getOpenJobs, getMainStatistics, getAllStatisticsByJob, getJobStatistics, getApplicantsByJobId } from './services';
 import {Request, Response} from 'express' 
 import { checkDecodedToken, handleResumeUpload } from './middlewares';
+import { createCipheriv } from 'crypto';
 
 const router = express.Router();
 
@@ -73,6 +74,17 @@ router.get('/statistics-by-job/:id', async (req: Request, res: Response) => {
     res.status(500).end();
   }
 
+});
+
+router.get('/applicants/:id', async (req: Request, res: Response) => { 
+  try { 
+    const applicants = await getApplicantsByJobId(req.params.id);
+    res.json(applicants);
+  }
+  catch(e) { 
+    console.log(e); 
+    res.status(500).end();
+  }
 });
 
 export default router; 

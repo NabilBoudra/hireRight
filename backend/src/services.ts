@@ -140,7 +140,7 @@ export async function addApplication(userId: string, jobId: string, fileName: st
         summary: content.summary.length <= 3 ? content.summary : content.summary.slice(0, 3), 
         skills: content.skills.length <= 3 ? content.skills : content.skills.slice(0, 3),
         yoe: content.yoe, 
-        score: content.yoe
+        score: content.score
     }
     const addedApplication = await Prisma.application.create({
         data: { 
@@ -150,6 +150,7 @@ export async function addApplication(userId: string, jobId: string, fileName: st
             summary: formattedContent.summary,
             skills: formattedContent.skills, 
             yoe: formattedContent.yoe, 
+            score: formattedContent.score,
         }
     });
     return addedApplication;
@@ -277,4 +278,24 @@ export async function getJobStatistics(id: string) {
         unreviewedApplicationsCount: Number(unreviewedApplicationsCount),
         chartStatistics: formattedApplications,
     };
+}
+
+export async function getApplicantsByJobId(id: string) { 
+    const applicants = await Prisma.application.findMany({
+        where: {
+            jobId: id,
+        },
+        include: {
+            user: true,
+        },
+    });
+
+    return applicants.map(applicant => ({
+        name: applicant.user.name,
+        isReviewed: applicant.isReviewed,
+        summary: applicant.summary,
+        skills: applicant.skills,
+        yoe: applicant.yoe,
+        score: applicant.score, 
+    }));
 }

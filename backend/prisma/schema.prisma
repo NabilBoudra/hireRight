@@ -42,6 +42,7 @@ model Application {
   summary    String[]
   skills     String[]
   yoe        Int    @default(0)
+  score      Int    @default(0)
 
   @@id(fields: [userId, jobId])
 }
