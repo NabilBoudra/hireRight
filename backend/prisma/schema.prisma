@@ -32,13 +32,16 @@ model User {
 }
 
 model Application {
-  user     User     @relation(fields: [userId], references: [id])
-  userId   String
-  job      Job      @relation(fields: [jobId], references: [id])
-  jobId    String
-  fileName String
-  date     DateTime @default(now())
-  isReviewed Boolean @default(false)
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  job        Job      @relation(fields: [jobId], references: [id])
+  jobId      String
+  fileName   String
+  date       DateTime @default(now())
+  isReviewed Boolean  @default(false)
+  summary    String[]
+  skills     String[]
+  yoe        Int    @default(0)
 
   @@id(fields: [userId, jobId])
 }

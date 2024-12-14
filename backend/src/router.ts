@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post('/apply', checkDecodedToken, handleResumeUpload, async (req: Request, res: Response) => { 
   try {
-    const application = await addApplication(req.user!.id, req.body.jobId, req.file!.filename)
+    const application = await addApplication(req.user!.id, req.body.jobId, req.file!.filename, req.file!.path)
     res.json(application);
   }
   catch(error) { 
@@ -38,7 +38,6 @@ router.get('/jobs', async (req: Request, res: Response) => {
   }
 
 });
-
 
 router.get('/statistics', async (req: Request, res: Response) => {
   try { 

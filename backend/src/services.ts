@@ -1,5 +1,12 @@
 import { User } from '@prisma/client';
 import Prisma from '../prisma/prisma'; 
+import { promises as fs } from 'fs';
+import { parsePdf } from './helpers';
+import { ChatCompletion } from 'openai/resources';
+import { zodResponseFormat } from "openai/helpers/zod";
+import { openai } from './openai';
+import { z } from "zod";
+
 
 export async function getOpenJobs(userId: string | null) { 
     if(!userId) { 
@@ -75,7 +82,7 @@ export async function flipBookmark(userId: string, jobId: string) {
     });
 }
 
-export async function addApplication(userId: string, jobId: string, fileName: string) { 
+export async function addApplication(userId: string, jobId: string, fileName: string, path: string) { 
     const job = await Prisma.job.findUnique({ 
         where: { 
             id: jobId, 
@@ -84,15 +91,70 @@ export async function addApplication(userId: string, jobId: string, fileName: st
     if(!job || !job.isOpen){ 
         throw new Error("Cannot apply to a closed job");
     }
+    const fileBuffer = await fs.readFile(path);
+    const parsedPdf = await parsePdf(fileBuffer);
+    const completion = await openai.chat.completions.create(
+        {
+          model: "gpt-3.5-turbo",
+          messages: [{
+            role: "user", 
+            content: `Given a resume and a job description, extract the following details and format the output as JSON:
+
+                    {
+                        "summary": ["string1", "string2", "string3"],  // A list of key professional traits or experience from the resume
+                        "skills": ["string1", "string2", "string3"],   // A list of skills relevant to the job from the resume
+                        "yoe": number,  // Years of experience from the resume (positive integer)
+                        "score": number  // A score between 0 and 10 representing the match between the resume and job description
+                    }
+
+                    - Make sure that every skills are granular that is don't include multiple skills in the same entry of the skills array.
+                    - Include 3 skills ordered in relevance. Include less if there are less than 3 skills.
+                    - Include at most 3 summary bullet points. Make sure that each bullet point is at most 80 characters long.
+                    - Score should take into account if the reusme and job description match. 
+                    - Score of 0 is a strong no hire 
+                    - Score of 5 is a neutral score, prefer other candidates.
+                    - Score of 10 is a Perfect hire.
+                    Example:
+
+                    {
+                        "summary": ["Experienced head chef with international experience", 
+                                    "Specializes in French and Italian cuisine", 
+                                    "Strong leadership and menu design expertise"],
+                        "skills": ["Menu planning", "Food safety compliance", "Team management"],
+                        "yoe": 10,
+                        "score": 8
+                    }
+
+                    Resume:
+                    ${parsedPdf}
+
+                    Job Description:
+                    ${job.title}
+                    ${job.description}
+            `
+          }],
+        }
+    )
+    const content = JSON.parse(completion.choices[0].message.content!);
+    const formattedContent = { 
+        summary: content.summary.length <= 3 ? content.summary : content.summary.slice(0, 3), 
+        skills: content.skills.length <= 3 ? content.skills : content.skills.slice(0, 3),
+        yoe: content.yoe, 
+        score: content.yoe
+    }
     const addedApplication = await Prisma.application.create({
         data: { 
             userId,
             jobId, 
             fileName,
+            summary: formattedContent.summary,
+            skills: formattedContent.skills, 
+            yoe: formattedContent.yoe, 
         }
     });
     return addedApplication;
 }
+
 
 export async function getMainStatistics() { 
     const openJobsCount = await Prisma.job.count({
